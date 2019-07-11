@@ -1,6 +1,15 @@
 import random
 import discord
 import logging
+from discord.utils import get
+from discord.ext import commands
+from discord.ext.commands import Bot
+from discord.voice_client import VoiceClient
+import os
+import asyncio
+
+
+bot = commands.Bot(command_prefix='$')
 
 class Chat_bot():
 
@@ -56,6 +65,17 @@ ace_visconti = Chat_bot(ace_jokes, ace_greetings, False, "Ace Visconti" )
 
 logging.basicConfig(level = logging.INFO)
 
+@bot.command()
+async def join(self, ctx, *, channel: discord.VoiceChannel):
+    """Joins a voice channel"""
+    print('this is running')
+    if ctx.voice_client is not None:
+        return await ctx.voice_client.move_to(channel)
+    await channel.connect()        
+
+
+
+
 class my_client(discord.Client):
 
 
@@ -65,7 +85,8 @@ class my_client(discord.Client):
         for guild in client.guilds:
             for channel in guild.channels:
                 if channel.name == 'general':
-                    await channel.send('Hey baby! I got four commands!\n /jokes \n /wisdom \n /greeting \n /help')
+                    await channel.send('Hey baby! I got four commands!\n /jokes \n /wisdom \n /hello \n /help')
+
 
         
     async def on_message(self, message):
@@ -80,9 +101,23 @@ class my_client(discord.Client):
         if message.content.startswith('/wisdom'):
             await message.channel.send("Like Ace Visconti Always Says: {}".format(random.choice(ace_wisdom)))
         if message.content.startswith('/help'):
-            await message.channel.send("Hey baby! I got four commands!\n /jokes \n /wisdom \n /greeting \n /help")
+            await message.channel.send("Hey baby! I got four commands!\n /jokes \n /wisdom \n /hello \n /help")
+
+    @bot.command(pass_context=True, aliases=['l','lea'])
+    async def leave(ctx):
+        channel = ctx.message.author.voice.channel
+        voice = get(bot.voice_clients, guild = ctx.guild)
+
+        if voice and voice.is_connected():
+                 await voice.disconnect()
+                 print(f"See ya!")
+                 await ctx.send(f"im gone bro")
+        else:
+            print('Bot dindt leave')
+            await ctx.send("dont think I can leave")
+    
 client = my_client()
-client.run('NTk4NzExMzkzNTAzNTQzMzE2.XSau0A.8wYkU4Ozrii0b48TnWJmZA1Dt7o')
+client.run('NTk4NzExMzkzNTAzNTQzMzE2.XSdrNg.x31NecVvtL0oANeLzeTAFwHGLeo')
 
 
 
