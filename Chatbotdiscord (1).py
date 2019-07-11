@@ -58,22 +58,29 @@ logging.basicConfig(level = logging.INFO)
 
 class my_client(discord.Client):
 
+
+
     async def on_ready(self):
         print('Logged on as {0}!'.format(self.user))
+        for guild in client.guilds:
+            for channel in guild.channels:
+                if channel.name == 'general':
+                    await channel.send('Hey baby! I got four commands!\n /jokes \n /wisdom \n /greeting \n /help')
 
+        
     async def on_message(self, message):
         if message.author == client.user:
             return
         print('Message from {0.author}: {0.content}'.format(message))
 
-        if message.content.startswith('joke'):
+        if message.content.startswith('/joke'):
             await message.channel.send("Ace Visconti Says: {}".format(random.choice(ace_jokes)))
-        if message.content.startswith('hello'):
+        if message.content.startswith('/hello'):
             await message.channel.send(random.choice(ace_greetings))
-        if message.content.startswith('wisdom'):
+        if message.content.startswith('/wisdom'):
             await message.channel.send("Like Ace Visconti Always Says: {}".format(random.choice(ace_wisdom)))
-
-
+        if message.content.startswith('/help'):
+            await message.channel.send("Hey baby! I got four commands!\n /jokes \n /wisdom \n /greeting \n /help")
 client = my_client()
 client.run('NTk4NzExMzkzNTAzNTQzMzE2.XSau0A.8wYkU4Ozrii0b48TnWJmZA1Dt7o')
 
